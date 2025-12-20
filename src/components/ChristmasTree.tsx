@@ -49,14 +49,15 @@ const ChristmasTree = ({ karmaPoints }: ChristmasTreeProps) => {
       {/* Tree Rows */}
       <div className="flex flex-col items-center w-full">
         {treeLayout.map((row, rowIndex) => (
-          <div
-            key={rowIndex}
-            className="flex items-center justify-center relative w-full flex-wrap"
-            style={{ 
-              gap: "clamp(16px, 4vw, 32px)",
-              marginBottom: "8px",
-            }}
-          >
+          <div key={rowIndex} className="w-full">
+            <div
+              className="grid grid-cols-5 items-center justify-items-center relative"
+              style={{
+                gap: "clamp(8px, 3vw, 28px)",
+                marginBottom: "8px",
+                padding: "6px 8px",
+              }}
+            >
             {/* Wire connecting bulbs */}
             {row.count > 1 && (
               <svg
@@ -91,15 +92,17 @@ const ChristmasTree = ({ karmaPoints }: ChristmasTreeProps) => {
               const isLit = hasLetter && litBulbCount > letterIndex;
               
               return (
-                <FilamentBulb
-                  key={`${rowIndex}-${bulbIndex}`}
-                  isLit={isLit}
-                  letter={letter}
-                  size={bulbSize}
-                  delay={rowIndex * 100 + bulbIndex * 50}
-                />
+                  <div key={`${rowIndex}-${bulbIndex}`} className="w-full flex items-center justify-center">
+                    <FilamentBulb
+                      isLit={isLit}
+                      letter={letter}
+                      size={bulbSize}
+                      delay={rowIndex * 100 + bulbIndex * 50}
+                    />
+                  </div>
               );
             })}
+              </div>
           </div>
         ))}
       </div>

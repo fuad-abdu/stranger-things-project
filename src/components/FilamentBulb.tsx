@@ -64,8 +64,8 @@ const FilamentBulb = ({
               : "text-transparent opacity-0"
           )}
           style={{
-            top: "10%",
-            marginTop: "80px",
+            top: "70%",
+            marginTop: "0px",
             textShadow: isLit
               ? "0 0 10px rgba(251,191,36,0.8), 0 0 20px rgba(251,191,36,0.6)"
               : "none",
