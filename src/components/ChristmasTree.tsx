@@ -1,6 +1,7 @@
 import { Star } from "lucide-react";
 import FilamentBulb from "./FilamentBulb";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 interface ChristmasTreeProps {
   karmaPoints: number;
@@ -25,6 +26,22 @@ const ChristmasTree = ({ karmaPoints }: ChristmasTreeProps) => {
     { count: 5, letters: { 2: 4 } },              // Row 3: 5 bulbs, letter "E" at center (position 2)
     { count: 5, letters: { 1: 5, 4: 6 } },        // Row 4: 5 bulbs, letters "S" "S" at positions 1,4
   ];
+
+  const [bulbSize, setBulbSize] = useState<"sm" | "md" | "lg">("lg");
+
+  useEffect(() => {
+    const updateSize = () => {
+      if (typeof window === "undefined") return;
+      const w = window.innerWidth;
+      if (w < 480) setBulbSize("sm");
+      else if (w < 768) setBulbSize("md");
+      else setBulbSize("lg");
+    };
+
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
   return (
     <div className="flex flex-col items-center gap-4 relative px-4 w-full max-w-6xl mx-auto rounded-lg" style={{ backgroundColor: "rgba(255, 255, 255, 0.08)" }}>
@@ -78,7 +95,7 @@ const ChristmasTree = ({ karmaPoints }: ChristmasTreeProps) => {
                   key={`${rowIndex}-${bulbIndex}`}
                   isLit={isLit}
                   letter={letter}
-                  size="lg"
+                  size={bulbSize}
                   delay={rowIndex * 100 + bulbIndex * 50}
                 />
               );
