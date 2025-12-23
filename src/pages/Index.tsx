@@ -7,10 +7,10 @@ import { useEffect, useRef } from "react";
 
 // ============================================
 // EDIT THIS VALUE TO CONTROL KARMA POINTS
-// Each 5000 points lights up one bulb
-// 35000+ points reveals all letters of "SUCCESS"
+// Each 2000 points lights up one bulb
+// 14000+ points reveals all letters of "SUCCESS"
 // ============================================
-const KARMA_POINTS = 60000;
+const KARMA_POINTS = 11540;
 // ============================================
 
 const Index = () => {

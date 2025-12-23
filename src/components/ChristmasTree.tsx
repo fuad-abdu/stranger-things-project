@@ -1,5 +1,6 @@
 import { Star } from "lucide-react";
 import FilamentBulb from "./FilamentBulb";
+import bulbOverrides from "@/config/bulbOverrides";
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
@@ -8,8 +9,9 @@ interface ChristmasTreeProps {
 }
 
 const ChristmasTree = ({ karmaPoints }: ChristmasTreeProps) => {
-  // Calculate how many bulbs should be lit (every 5000 karma = 1 bulb)
-  const litBulbCount = Math.floor(karmaPoints / 5000);
+  // Calculate how many bulbs should be lit (every 2000 karma = 1 letter bulb)
+  const POINTS_PER_LETTER = 2000;
+  const litBulbCount = Math.floor(karmaPoints / POINTS_PER_LETTER);
   
   // The word "SUCCESS" has 7 letters - these are revealed in order
   const successLetters = ["S", "U", "C", "C", "E", "S", "S"];
@@ -86,20 +88,39 @@ const ChristmasTree = ({ karmaPoints }: ChristmasTreeProps) => {
               const letterIndex = row.letters[bulbIndex];
               const hasLetter = letterIndex !== undefined;
               const letter = hasLetter ? successLetters[letterIndex] : undefined;
-              
+
               // A bulb with a letter lights up when karma reaches that letter's milestone
-              // letterIndex 0 = 5000 karma, letterIndex 1 = 10000 karma, etc.
-              const isLit = hasLetter && litBulbCount > letterIndex;
-              
+              // letterIndex 0 = 2000 karma, letterIndex 1 = 4000 karma, etc.
+              const letterLit = hasLetter && litBulbCount > letterIndex;
+
+              // Also light some non-letter bulbs randomly but deterministically based on karma
+              // so they appear 'random' but stay stable for a given `karmaPoints`.
+              const bulbsPerRow = row.count;
+              const bulbGlobalIndex = rowIndex * bulbsPerRow + bulbIndex;
+              const seed = Math.abs(karmaPoints + bulbGlobalIndex * 997);
+              const pseudo = ((seed * 9301 + 49297) % 233280) / 233280; // 0..1
+
+              // Chance increases slightly with number of revealed letters, capped at 35%
+              const randomChance = Math.min(0.35, 0.05 * litBulbCount);
+              const isRandomLit = !hasLetter && litBulbCount > 0 && pseudo < randomChance;
+
+              // Check override map (keys are `row-bulb` like "0-2").
+              const bulbKey = `${rowIndex}-${bulbIndex}`;
+              const override = bulbOverrides[bulbKey];
+
+              let isLit = letterLit || isRandomLit;
+              if (override === "on") isLit = true;
+              else if (override === "off") isLit = false;
+
               return (
-                  <div key={`${rowIndex}-${bulbIndex}`} className="w-full flex items-center justify-center">
-                    <FilamentBulb
-                      isLit={isLit}
-                      letter={letter}
-                      size={bulbSize}
-                      delay={rowIndex * 100 + bulbIndex * 50}
-                    />
-                  </div>
+                <div key={`${rowIndex}-${bulbIndex}`} className="w-full flex items-center justify-center">
+                  <FilamentBulb
+                    isLit={isLit}
+                    letter={letter}
+                    size={bulbSize}
+                    delay={rowIndex * 100 + bulbIndex * 50}
+                  />
+                </div>
               );
             })}
               </div>

@@ -6,9 +6,10 @@ const KarmaDisplay = ({ points }: KarmaDisplayProps) => {
   // Format number with commas
   const formattedPoints = points.toLocaleString();
   
-  // Calculate progress to next milestone
-  const nextMilestone = (Math.floor(points / 5000) + 1) * 5000;
-  const progress = ((points % 5000) / 5000) * 100;
+  // Calculate progress to next milestone (2000 points per letter milestone)
+  const POINTS_PER_LETTER = 2000;
+  const nextMilestone = (Math.floor(points / POINTS_PER_LETTER) + 1) * POINTS_PER_LETTER;
+  const progress = ((points % POINTS_PER_LETTER) / POINTS_PER_LETTER) * 100;
 
   return (
     <div className="flex flex-col items-center gap-4">
