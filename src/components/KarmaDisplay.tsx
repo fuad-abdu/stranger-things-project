@@ -5,11 +5,15 @@ interface KarmaDisplayProps {
 const KarmaDisplay = ({ points }: KarmaDisplayProps) => {
   // Format number with commas
   const formattedPoints = points.toLocaleString();
+  // Show a '+' suffix for high karma totals (24000+)
+  const displayPoints = points >= 24000 ? `${formattedPoints}+` : formattedPoints;
   
   // Calculate progress to next milestone (2000 points per letter milestone)
   const POINTS_PER_LETTER = 2000;
   const nextMilestone = (Math.floor(points / POINTS_PER_LETTER) + 1) * POINTS_PER_LETTER;
-  const progress = ((points % POINTS_PER_LETTER) / POINTS_PER_LETTER) * 100;
+  const isCompletedForDisplay = points >= 24000;
+  const nextMilestoneLabel = isCompletedForDisplay ? "Milestone completed" : nextMilestone.toLocaleString();
+  const progress = isCompletedForDisplay ? 100 : ((points % POINTS_PER_LETTER) / POINTS_PER_LETTER) * 100;
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -18,7 +22,7 @@ const KarmaDisplay = ({ points }: KarmaDisplayProps) => {
           Total Karma Points
         </p>
         <p className="karma-display text-6xl md:text-7xl font-display">
-          {formattedPoints}
+          {displayPoints}
         </p>
       </div>
 
@@ -26,7 +30,7 @@ const KarmaDisplay = ({ points }: KarmaDisplayProps) => {
       <div className="w-64 md:w-80">
         <div className="flex justify-between text-xs text-muted-foreground mb-1">
           <span>Next milestone</span>
-          <span>{nextMilestone.toLocaleString()}</span>
+          <span>{nextMilestoneLabel}</span>
         </div>
         <div className="h-1.5 bg-muted rounded-full overflow-hidden">
           <div

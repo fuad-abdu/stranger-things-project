@@ -3,18 +3,20 @@ import KarmaDisplay from "@/components/KarmaDisplay";
 import SnowEffect from "@/components/SnowEffect";
 import backgroundImage from "@/assets/upside-down-bg.png";
 import backgroundMusic from "@/assets/stranger_wars_theme.mp3";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import CelebrationPopper from "@/components/CelebrationPopper";
 
 // ============================================
 // EDIT THIS VALUE TO CONTROL KARMA POINTS
 // Each 2000 points lights up one bulb
 // 14000+ points reveals all letters of "SUCCESS"
 // ============================================
-const KARMA_POINTS = 11540;
+const KARMA_POINTS = 24000;
 // ============================================
 
 const Index = () => {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const [showCelebration, setShowCelebration] = useState(true);
 
   useEffect(() => {
     const playAudio = () => {
@@ -39,8 +41,19 @@ const Index = () => {
     };
   }, []);
 
+  // Hide celebration shortly after page load (or when user clicks the overlay)
+  useEffect(() => {
+    const onLoad = () => setTimeout(() => setShowCelebration(false), 5000);
+    if (document.readyState === "complete") onLoad();
+    else window.addEventListener("load", onLoad);
+    return () => window.removeEventListener("load", onLoad);
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden">
+      {showCelebration && (
+        <CelebrationPopper duration={5000} onClose={() => setShowCelebration(false)} />
+      )}
       {/* Background music */}
       <audio ref={audioRef} loop style={{ display: "none" }}>
         <source src={backgroundMusic} type="audio/mpeg" />
